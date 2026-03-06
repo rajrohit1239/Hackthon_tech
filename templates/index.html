@@ -77,7 +77,10 @@
                         <textarea name="audience" placeholder="e.g. Marketing managers, budget-conscious" required></textarea>
                         <label>MARKETING PLATFORM</label>
                         <input type="text" name="platform" placeholder="e.g. Instagram, LinkedIn" required>
-                        <button type="submit" class="btn-primary">GENERATE CAMPAIGN</button>
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary">GENERATE CAMPAIGN</button>
+                            <button type="reset" class="btn-clear" onclick="document.getElementById('campaignOutput').classList.add('hidden')">CLEAR</button>
+                        </div>
                     </form>
                     <div id="campaignOutput" class="result-box hidden"></div>
                 </div>
@@ -91,7 +94,10 @@
                         <input type="text" name="product" placeholder="e.g. Cloud-based inventory system" required>
                         <label>CUSTOMER PERSONA</label>
                         <textarea name="customer" placeholder="e.g. Operations Director, Fortune 500" required></textarea>
-                        <button type="submit" class="btn-primary">GENERATE PITCH</button>
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary">GENERATE PITCH</button>
+                            <button type="reset" class="btn-clear" onclick="document.getElementById('pitchOutput').classList.add('hidden')">CLEAR</button>
+                        </div>
                     </form>
                     <div id="pitchOutput" class="result-box hidden"></div>
                 </div>
@@ -109,7 +115,10 @@
                         <textarea name="need" placeholder="e.g. Reducing churn by 20%" required></textarea>
                         <label>URGENCY LEVEL</label>
                         <input type="text" name="urgency" placeholder="e.g. High priority, end of Q3" required>
-                        <button type="submit" class="btn-primary">SCORE LEAD</button>
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary">SCORE LEAD</button>
+                            <button type="reset" class="btn-clear" onclick="document.getElementById('leadOutput').classList.add('hidden')">CLEAR</button>
+                        </div>
                     </form>
                     <div id="leadOutput" class="result-box hidden"></div>
                 </div>
@@ -120,29 +129,66 @@
 
     <script>
         function showSection(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id + '-section').classList.remove('hidden');
+            document.querySelectorAll('section').forEach(s => {
+                s.classList.add('hidden');
+                s.classList.remove('active-section');
+            });
+            const target = document.getElementById(id + '-section');
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('active-section');
+                window.scrollTo(0, 0);
+            }
+        }
+        function formatAIResponse(text) {
+            if (!text) return "";
+            return text
+                .replace(/\n/g, '<br>') 
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         }
 
+        
         async function handleForm(event, url, outputId) {
             event.preventDefault();
             const outputDiv = document.getElementById(outputId);
-            outputDiv.innerHTML = "Processing with AI...";
+            
+            
+            outputDiv.classList.add('is-loading'); 
+            outputDiv.innerHTML = `
+                <div class="loading-container">
+                    <i class="fas fa-circle-notch fa-spin"></i> Generating with AI...
+                </div>`;
             outputDiv.classList.remove('hidden');
             
-            const formData = new FormData(event.target);
             try {
-                const response = await fetch(url, { method: 'POST', body: formData });
+                const response = await fetch(url, { method: 'POST', body: new FormData(event.target) });
                 const data = await response.json();
-                outputDiv.innerHTML = `<pre>${data.result}</pre>`;
+                
+                outputDiv.classList.remove('is-loading'); 
+                outputDiv.innerHTML = `
+                    <div class="result-header"><i class="fas fa-magic"></i> AI GENERATED RESULT</div>
+                    <div class="result-body">${formatAIResponse(data.result)}</div>`;
             } catch (err) {
-                outputDiv.innerHTML = "Error connecting to server.";
+                outputDiv.classList.remove('is-loading');
+                outputDiv.innerHTML = "<div class='loading-container'>Error connecting to server.</div>";
             }
         }
 
-        document.getElementById('campaignForm').onsubmit = (e) => handleForm(e, '/generate_campaign', 'campaignOutput');
-        document.getElementById('pitchForm').onsubmit = (e) => handleForm(e, '/generate_pitch', 'pitchOutput');
-        document.getElementById('leadForm').onsubmit = (e) => handleForm(e, '/lead_score', 'leadOutput');
+        const formMapping = { 
+            'campaignForm': '/generate_campaign', 
+            'pitchForm': '/generate_pitch', 
+            'leadForm': '/lead_score' 
+        };
+
+        Object.entries(formMapping).forEach(([formId, url]) => {
+            const form = document.getElementById(formId);
+            if (form) {
+                const outputId = formId.replace('Form', 'Output');
+                form.onsubmit = (e) => handleForm(e, url, outputId);
+            }
+        });
     </script>
+</body>
+</html>
 </body>
 </html>
