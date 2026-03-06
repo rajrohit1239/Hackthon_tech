@@ -1,0 +1,134 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 58%, #a29bfe 100%);
+    color: #fff;
+    min-height: 100vh;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.logo { font-size: 1.5rem; font-weight: 700; }
+.nav-links a { color: #fff; text-decoration: none; margin-left: 20px; font-weight: 500; }
+
+.container { max-width: 1000px; margin: 50px auto; padding: 0 20px; }
+
+.hero { text-align: center; margin-bottom: 50px; }
+.hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: #fff;
+    color: #333;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+.card:hover { transform: translateY(-10px); }
+.card i { font-size: 2.5rem; color: #764ba2; margin-bottom: 20px; }
+
+.form-container {
+    background: #fff;
+    color: #333;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+label { display: block; margin-top: 15px; font-weight: 600; color: #764ba2; }
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    width: 100%;
+    margin-top: 25px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.result-box {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-left: 5px solid #764ba2;
+    color: #444;
+    white-space: pre-wrap;
+}
+
+.hidden { display: none; }
+/* Landing Page Hero  */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.get-started-btn {
+    margin: 30px auto;
+    padding: 18px 50px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    display: block;
+    width: fit-content;
+    background: #fff;
+    color: #764ba2;
+    cursor: pointer;
+}
+
+/* Supported Platforms Grid [cite: 536-547] */
+.platforms-container {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.platform-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.platform-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 25px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+}
+
+.platform-item i {
+    font-size: 1.8rem;
+}
