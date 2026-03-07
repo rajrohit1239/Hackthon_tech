@@ -57,12 +57,12 @@
                 <div class="platforms-container">
                     <h2>Supported Platforms</h2>
                     <div class="platform-grid">
-                        <div class="platform-item"><i class="fab fa-linkedin"></i><span>LinkedIn</span></div>
-                        <div class="platform-item"><i class="fab fa-instagram"></i><span>Instagram</span></div>
-                        <div class="platform-item"><i class="fab fa-facebook"></i><span>Facebook</span></div>
-                        <div class="platform-item"><i class="fab fa-twitter"></i><span>Twitter/X</span></div>
-                        <div class="platform-item"><i class="fab fa-youtube"></i><span>YouTube</span></div>
-                        <div class="platform-item"><i class="fas fa-envelope"></i><span>Email</span></div>
+                        <div class="platform-item" onclick="selectPlatform('LinkedIn')"><i class="fab fa-linkedin"></i><span>LinkedIn</span></div>
+                        <div class="platform-item" onclick="selectPlatform('Instagram')"><i class="fab fa-instagram"></i><span>Instagram</span></div>
+                        <div class="platform-item" onclick="selectPlatform('Facebook')"><i class="fab fa-facebook"></i><span>Facebook</span></div>
+                        <div class="platform-item" onclick="selectPlatform('Twitter')"><i class="fab fa-twitter"></i><span>Twitter/X</span></div>
+                        <div class="platform-item" onclick="selectPlatform('YouTube')"><i class="fab fa-youtube"></i><span>YouTube</span></div>
+                        <div class="platform-item" onclick="selectPlatform('Email')"><i class="fas fa-envelope"></i><span>Email</span></div>
                     </div>
                 </div>
             </section>
@@ -128,65 +128,104 @@
     </div>
 
     <script>
-        function showSection(id) {
-            document.querySelectorAll('section').forEach(s => {
-                s.classList.add('hidden');
-                s.classList.remove('active-section');
-            });
-            const target = document.getElementById(id + '-section');
-            if (target) {
-                target.classList.remove('hidden');
-                target.classList.add('active-section');
-                window.scrollTo(0, 0);
-            }
-        }
-        function formatAIResponse(text) {
-            if (!text) return "";
-            return text
-                .replace(/\n/g, '<br>') 
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        }
-
-        
-        async function handleForm(event, url, outputId) {
-            event.preventDefault();
-            const outputDiv = document.getElementById(outputId);
-            
-            
-            outputDiv.classList.add('is-loading'); 
-            outputDiv.innerHTML = `
-                <div class="loading-container">
-                    <i class="fas fa-circle-notch fa-spin"></i> Generating with AI...
-                </div>`;
-            outputDiv.classList.remove('hidden');
-            
-            try {
-                const response = await fetch(url, { method: 'POST', body: new FormData(event.target) });
-                const data = await response.json();
-                
-                outputDiv.classList.remove('is-loading'); 
-                outputDiv.innerHTML = `
-                    <div class="result-header"><i class="fas fa-magic"></i> AI GENERATED RESULT</div>
-                    <div class="result-body">${formatAIResponse(data.result)}</div>`;
-            } catch (err) {
-                outputDiv.classList.remove('is-loading');
-                outputDiv.innerHTML = "<div class='loading-container'>Error connecting to server.</div>";
-            }
-        }
-
-        const formMapping = { 
-            'campaignForm': '/generate_campaign', 
-            'pitchForm': '/generate_pitch', 
-            'leadForm': '/lead_score' 
-        };
-
-        Object.entries(formMapping).forEach(([formId, url]) => {
-            const form = document.getElementById(formId);
-            if (form) {
-                const outputId = formId.replace('Form', 'Output');
-                form.onsubmit = (e) => handleForm(e, url, outputId);
-            }
+        // 1. Navigation: Shows one section and hides others
+    function showSection(id) {
+        document.querySelectorAll('section').forEach(s => {
+            s.classList.add('hidden');
+            s.classList.remove('active-section');
         });
+        
+        const target = document.getElementById(id + '-section');
+        if (target) {
+            target.classList.remove('hidden');
+            target.classList.add('active-section');
+            
+            if (id === 'home') {
+                const items = document.querySelectorAll('.platform-item');
+                items.forEach(item => {
+                    item.style.animation = 'none';
+                    item.offsetHeight; 
+                    item.style.animation = '';
+                });
+            }
+            window.scrollTo(0, 0);
+        }
+    }
+
+    // 2. MISSING FUNCTION: Formats AI text (Fixes the Connection Error)
+    function formatAIResponse(text) {
+        if (!text) return "";
+        return text
+            .replace(/\n/g, '<br>') 
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
+    }
+
+    // 3. Form Handler with Copy Button support
+    async function handleForm(event, url, outputId) {
+        event.preventDefault();
+        const outputDiv = document.getElementById(outputId);
+        
+        outputDiv.classList.add('is-loading'); 
+        outputDiv.innerHTML = `
+            <div class="loading-container">
+                <i class="fas fa-circle-notch fa-spin"></i> Generating with AI...
+            </div>`;
+        outputDiv.classList.remove('hidden');
+        
+        try {
+            const response = await fetch(url, { method: 'POST', body: new FormData(event.target) });
+            const data = await response.json();
+            
+            outputDiv.classList.remove('is-loading'); 
+            // Added a Copy Button to the header
+            outputDiv.innerHTML = `
+                <div class="result-header">
+                    <span><i class="fas fa-magic"></i> AI GENERATED RESULT</span>
+                    <button onclick="copyResult('${outputId}')" class="copy-btn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+                <div class="result-body" id="${outputId}-text">${formatAIResponse(data.result)}</div>`;
+        } catch (err) {
+            outputDiv.classList.remove('is-loading');
+            outputDiv.innerHTML = "<div class='loading-container'>Error connecting to server.</div>";
+        }
+    }
+
+    // 4. Copy to Clipboard Function
+    function copyResult(outputId) {
+        const text = document.getElementById(outputId + '-text').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; }, 2000);
+        });
+    }
+
+    // 5. Initialize Forms
+    const formMapping = { 
+        'campaignForm': '/generate_campaign', 
+        'pitchForm': '/generate_pitch', 
+        'leadForm': '/lead_score' 
+    };
+
+    Object.entries(formMapping).forEach(([formId, url]) => {
+        const form = document.getElementById(formId);
+        if (form) {
+            const outputId = formId.replace('Form', 'Output');
+            form.onsubmit = (e) => handleForm(e, url, outputId);
+        }
+    });
+
+    // 6. Platform Selection
+    function selectPlatform(platformName) {
+        showSection('campaign');
+        const platformInput = document.querySelector('input[name="platform"]');
+        if (platformInput) {
+            platformInput.value = platformName;
+            platformInput.focus();
+        }
+    }
     </script>
 </body>
 </html>
