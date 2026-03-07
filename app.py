@@ -4,13 +4,11 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Configuration
 GROQ_API_KEY = os.getenv("GROQ_API_KEY") 
 GROQ_MODEL = "llama-3.3-70b-versatile"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
@@ -96,3 +94,4 @@ if __name__ == "__main__":
     if not GROQ_API_KEY:
         print("WARNING: GROQ_API_KEY is missing! Check your .env file.")
     app.run(debug=True)
+
