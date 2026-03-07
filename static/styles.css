@@ -109,3 +109,75 @@ input, textarea {
     border: 1px solid rgba(255, 255, 255, 0.2); display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
 .hidden { display: none; }
+.platform-item {
+    cursor: pointer; /* Shows the hand icon on hover */
+    transition: all 0.3s ease;
+}
+
+.platform-item:active {
+    transform: scale(0.95); /* Slight "press" effect when clicked */
+    background: rgba(255, 255, 255, 0.3);
+}
+/* --- PLATFORM ANIMATIONS --- */
+
+/* 1. Define the Pop-In Effect */
+@keyframes platformPop {
+    0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 2. Apply animation to items with a delay for each */
+.platform-item {
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: platformPop 0.5s ease-out forwards;
+    opacity: 0; /* Starts invisible until animation kicks in */
+}
+
+/* 3. Staggered Delay (Items pop in one after another) */
+.platform-item:nth-child(1) { animation-delay: 0.1s; }
+.platform-item:nth-child(2) { animation-delay: 0.2s; }
+.platform-item:nth-child(3) { animation-delay: 0.3s; }
+.platform-item:nth-child(4) { animation-delay: 0.4s; }
+.platform-item:nth-child(5) { animation-delay: 0.5s; }
+.platform-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* 4. Hover "Glow" and Lift Effect */
+.platform-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-8px) scale(1.05);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 
+                0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.platform-item:active {
+    transform: scale(0.95);
+}
+
+/* 5. Icon Animation on Hover */
+.platform-item:hover i {
+    transform: rotate(10deg) scale(1.2);
+    color: #fff;
+    transition: 0.3s;
+}
+.result-header {
+    display: flex;
+    justify-content: space-between; /* Pushes button to the right */
+    align-items: center;
+}
+
+.copy-btn {
+    background: #764ba2;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.copy-btn:hover {
+    background: #4f46e5;
+}
