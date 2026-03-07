@@ -128,7 +128,6 @@
     </div>
 
     <script>
-        // 1. Navigation: Shows one section and hides others
     function showSection(id) {
         document.querySelectorAll('section').forEach(s => {
             s.classList.add('hidden');
@@ -152,7 +151,7 @@
         }
     }
 
-    // 2. MISSING FUNCTION: Formats AI text (Fixes the Connection Error)
+
     function formatAIResponse(text) {
         if (!text) return "";
         return text
@@ -160,7 +159,7 @@
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
     }
 
-    // 3. Form Handler with Copy Button support
+   
     async function handleForm(event, url, outputId) {
         event.preventDefault();
         const outputDiv = document.getElementById(outputId);
@@ -177,7 +176,7 @@
             const data = await response.json();
             
             outputDiv.classList.remove('is-loading'); 
-            // Added a Copy Button to the header
+            
             outputDiv.innerHTML = `
                 <div class="result-header">
                     <span><i class="fas fa-magic"></i> AI GENERATED RESULT</span>
@@ -192,7 +191,6 @@
         }
     }
 
-    // 4. Copy to Clipboard Function
     function copyResult(outputId) {
         const text = document.getElementById(outputId + '-text').innerText;
         navigator.clipboard.writeText(text).then(() => {
@@ -202,7 +200,6 @@
         });
     }
 
-    // 5. Initialize Forms
     const formMapping = { 
         'campaignForm': '/generate_campaign', 
         'pitchForm': '/generate_pitch', 
@@ -217,7 +214,6 @@
         }
     });
 
-    // 6. Platform Selection
     function selectPlatform(platformName) {
         showSection('campaign');
         const platformInput = document.querySelector('input[name="platform"]');
@@ -231,3 +227,4 @@
 </html>
 </body>
 </html>
+
